@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import WorkoutDetails from "../../components/Navbar/WorkoutDetails/WorkoutDetails";
+WorkoutDetails;
 
 const Home = () => {
   const [workouts, setWorkouts] = useState(null);
@@ -8,8 +10,8 @@ const Home = () => {
     const fetchWorkouts = async () => {
       try {
         const response = await fetch("/api/workouts"); // Fetch from /api
-        const json = await response.json(); 
-  
+        const json = await response.json();
+
         if (response.ok) {
           setWorkouts(json);
         } else {
@@ -21,16 +23,16 @@ const Home = () => {
     };
     fetchWorkouts();
   }, []);
-  
 
   return (
-    <div className="page">
-      {error && <p>Error: {error}</p>} {/* Display error if any */}
-      {workouts && workouts.map((workout) => (
-        <div key={workout._id}>
-          <p className="title">{workout.title}</p>
-        </div>
-      ))}
+    <div className="home">
+      <div className="workouts">
+        {error && <p>Error: {error}</p>} {/* Display error if any */}
+        {workouts &&
+          workouts.map((workout) => (
+            <WorkoutDetails key={workout._id} workout={workout} />
+          ))}
+      </div>
     </div>
   );
 };
