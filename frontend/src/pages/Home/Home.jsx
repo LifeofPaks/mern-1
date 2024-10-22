@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
 import WorkoutDetails from "../../components/WorkoutDetails/WorkoutDetails";
-WorkoutDetails;
+import WorkoutForm from "../../components/WorkoutForm/WorkoutForm";
+import { useWorkoutsContext } from "../../hooks/useWorkoutContext";
+
 
 const Home = () => {
-  const [workouts, setWorkouts] = useState(null);
-  const [error, setError] = useState(null); // To capture any errors
+  const {workouts, dispatch} = useWorkoutsContext();
 
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await fetch("/api/workouts"); // Fetch from /api
+        const response = await fetch("/api/workouts"); 
         const json = await response.json();
 
         if (response.ok) {
-          setWorkouts(json);
+          dispatch({type:"SET_WORKOUTS", payload: json})
         } else {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
       } catch (err) {
-        console.error(err.message); // Catch and log any error
+        console.error(err.message); 
       }
     };
     fetchWorkouts();
@@ -27,12 +28,12 @@ const Home = () => {
   return (
     <div className="home">
       <div className="workouts">
-        {error && <p>Error: {error}</p>} {/* Display error if any */}
         {workouts &&
           workouts.map((workout) => (
             <WorkoutDetails key={workout._id} workout={workout} />
           ))}
       </div>
+      <WorkoutForm/>
     </div>
   );
 };
