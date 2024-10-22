@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import WorkoutDetails from "../../components/Navbar/WorkoutDetails/WorkoutDetails";
+import WorkoutDetails from "../../components/WorkoutDetails/WorkoutDetails";
 WorkoutDetails;
 
 const Home = () => {
