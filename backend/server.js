@@ -4,7 +4,8 @@ const port = process.env.PORT
 
 const express = require('express')
 const mongoose = require('mongoose')
-const workoutRouter = require('./routes/workouts')
+const workoutRoutes = require('./routes/workouts')
+const userRoutes = require('./routes/user')
 
 const app = express()
 
@@ -23,8 +24,12 @@ app.use((req, res, next) =>{
 // })
 
 
-//REPLACE THE ROUTES HERE
-app.use('/api/workouts',workoutRouter)
+//WORKOUTS ROUTES
+app.use('/api/workouts',workoutRoutes)
+
+//USER ROUTES
+app.use('/api/user',userRoutes)
+
 
 //CONNECT TO DB
 mongoose.connect(process.env.MONGO_URI)
