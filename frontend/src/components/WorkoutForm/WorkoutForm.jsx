@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useWorkoutsContext } from "../../hooks/useWorkoutContext";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const WorkoutForm = () => {
-    const {dispatch} = useWorkoutsContext()
+  const { dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
   const [title, setTitle] = useState("");
   const [load, setLoad] = useState("");
   const [reps, setReps] = useState("");
@@ -12,6 +14,11 @@ const WorkoutForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!user) {
+      setError("You must be logged in");
+      return;
+    }
+
     const workout = { title, load, reps };
 
     const response = await fetch("/api/workouts", {
@@ -19,6 +26,7 @@ const WorkoutForm = () => {
       body: JSON.stringify(workout),
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${user.token}`,
       },
     });
 
@@ -26,17 +34,17 @@ const WorkoutForm = () => {
 
     if (!response.ok) {
       setError(json.error);
-      setEmptyFields(json.emptyFields)
+      setEmptyFields(json.emptyFields);
     }
 
-    if(response.ok){
-        setError(null)
-        setTitle('')
-        setLoad('')
-        setReps('')
-        setEmptyFields([])
-        console.log("New workout added!", json)
-        dispatch({type:"CREATE_WORKOUTS", payload: json})
+    if (response.ok) {
+      setError(null);
+      setTitle("");
+      setLoad("");
+      setReps("");
+      setEmptyFields([]);
+      console.log("New workout added!", json);
+      dispatch({ type: "CREATE_WORKOUTS", payload: json });
     }
   };
 
@@ -49,7 +57,7 @@ const WorkoutForm = () => {
         type="text"
         onChange={(e) => setTitle(e.target.value)}
         value={title}
-        className={emptyFields.includes('title') ? "error" : ''}
+        className={emptyFields.includes("title") ? "error" : ""}
       />
 
       <label>Load (in Kg): </label>
@@ -57,7 +65,7 @@ const WorkoutForm = () => {
         type="number"
         onChange={(e) => setLoad(e.target.value)}
         value={load}
-        className={emptyFields.includes('load') ? "error" : ''}
+        className={emptyFields.includes("load") ? "error" : ""}
       />
 
       <label>Reps: </label>
@@ -65,11 +73,11 @@ const WorkoutForm = () => {
         type="number"
         onChange={(e) => setReps(e.target.value)}
         value={reps}
-        className={emptyFields.includes('reps') ? "error" : ''}
+        className={emptyFields.includes("reps") ? "error" : ""}
       />
 
       <button>Add Workout</button>
-      {error && <div className="error">{error}</div> }
+      {error && <div className="error">{error}</div>}
     </form>
   );
 };
